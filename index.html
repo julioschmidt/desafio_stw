@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./style.css" />
+
+    <title>Desafio Cadastro de Receitas</title>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container-fluid">
+        <div class="row bg-primary p-2">
+          <div class="col-lg-12">
+            <h1
+              class="text-center text-light Bootstrap heading pt-2"
+              style="font-size: 30px"
+            >
+              Desafio Cadastro de Receitas
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="container mt-3">
+        <div class="row justify-content-between">
+          <div class="col-lg-6">
+            <button class="btn btn-primary text-light fw-semibold" @click="showAddIngredientModal=true">
+              <i class="fas fa-plus"></i>&nbsp;&nbsp;Adicionar novo ingrediente
+          </div>
+          <div class="col-lg-6 text-end">
+            <button class="btn btn-primary text-light fw-semibold" @click="showAddRecipeModal=true">
+              <i class="fas fa-plus"></i>&nbsp;&nbsp;Adicionar nova receita
+            </button>
+          </div>
+        </div>
+        <hr class="text-primary" />
+        <div class="alert alert-danger text-center" v-if="errorMsg">{{ errorMsg }}</div>
+        <div class="alert alert-success text-center" v-if="successMsg">
+          {{ successMsg }}
+        </div>
+      </div>
+
+      <!--Tabela com receitas-->
+
+      <div class="row justify-content-center">
+        <div class="col-lg-9">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr class="text-center bg-primary text-light">
+                <th>código</th>
+                <th>descrição</th>
+                <th>editar</th>
+                <th>excluir</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-center" v-for="recipe in recipes">
+                <td>{{recipe.codigo}}</td>
+                <td>{{recipe.descricao}}</td>
+                <td>
+                  <a href="#" class="text-success" @click="showEditRecipeModal=true; selectRecipe(recipe);"
+                    ><i class="fas fa-wrench"></i
+                  ></a>
+                </td>
+                <td>
+                  <a href="#" class="text-danger"
+                    ><i class="fas fa-trash-alt" @click="showDeleteRecipeModal=true; selectRecipe(recipe);"></i
+                  ></a>
+                </td>
+              </tr> 
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!--Caixa de create de ingrediente-->
+      <div class="containerAddModal">
+        <div id="addModal" v-if="showAddIngredientModal">
+          <div class="header">
+            <h5>Adicionar novo ingrediente</h5>
+            <i class="fas fa-times" @click="showAddIngredientModal=false"></i>
+          </div>
+          <div class="body">
+            <form action="#" method="post">
+              <div class="nome">
+                <label for="nomeIngrediente">Nome do ingrediente</label>
+                <input
+                  id="nomeIngrediente"
+                  type="text"
+                  name="nome"
+                  placeholder="Nome"
+                  v-model="newIngredient.nameIngredient"
+                />
+              </div>
+              <div class="addIngredient">
+                <button class="btn btn-primary btn-block" @click="showAddIngredientModal=false; addIngredient();">
+                  Adicionar ingrediente
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!--Caixa de create de receita-->
+      <div class="containerAddModal">
+        <div id="addModal" v-if="showAddRecipeModal">
+          <div class="header">
+            <h5>Adicionar nova receita</h5>
+            <i class="fas fa-times" @click="showAddRecipeModal=false"></i>
+          </div>
+          <div class="body">
+            <form action="#" method="post">
+              <div class="nome">
+                <label for="nameRecipe">Nome da receita</label>
+                <input
+                  id="nameRecipe"
+                  type="text"
+                  name="nameRecipe"
+                  placeholder="Nome"
+                />
+              </div>
+              <div class="ingredientes-receita">
+                <label for="ingredient">Ingrediente</label>
+                <label for="order">Ordem</label>
+                <label for="quantity">Quantidade</label>
+                <br />
+                <div class="dinamic-form" v-for="input in newIngredientsList" :key="input.id">
+                  <select :id="input.id" v-model="input.ingredient" >
+                    <option  v-for="ingredient in ingredients">{{ ingredient.descricao }}</option>
+                  </select>
+                  <input v-model="input.order" id="order" type="number" step="1">
+                  <input v-model="input.quantity" id="quantity" type="number" step="50" />
+                </div>
+
+                <button class="add-input" @click="addInputIngredient">
+                  <i class="fas fa-plus" ></i>
+                </button>
+              </div>
+              <div class="addRecipe">
+                <button type="submit" class="btn btn-primary btn-block" @click="showAddRecipeModal=false; addRecipe();">
+                  Adicionar receita
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!--Caixa de update de receita-->
+
+      <div class="containerEditModal">
+        <div id="editModal" v-if="showEditRecipeModal">
+          <div class="header">
+            <h5>Editar receita</h5>
+            <i class="fas fa-times" @click="showEditRecipeModal=false"></i>
+          </div>
+          <div class="body">
+            <form action="#" method="post">
+              <div class="nome">
+                <label for="nomeReceita">Nome da receita</label>
+                <input
+                  id="nomeReceita"
+                  type="text"
+                  name="nome"
+                  v-model="currentRecipe.descricao"
+                />
+              </div>
+              <div class="ingredientes-receita">
+                <label for="ingredientesReceita">Ingredientes</label>
+                <label for="quantidade-ingrediente">Quantidade</label>
+                <br />
+                <select name="ingredientesReceita" id="ingredientesReceita">
+                  <option value="milho">milho</option>
+                  <option value="soja">soja</option>
+                </select>
+                <input type="number" step="50" />
+                <button>
+                  <i class="fas fa-plus" @click="showEditRecipeModal=false"></i>
+                </button>
+              </div>
+              <div class="editRecipe">
+                <button class="btn btn-primary btn-block" @click="showEditRecipeModal=false; updateRecipe();">
+                  Concluído
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!--Caixa de delete de receita-->   
+      
+      <div class="containerDeleteModal">
+        <div id="deleteModal" v-if="showDeleteRecipeModal">
+          <div class="header">
+            <h5>Excluir Receita</h5>
+            <i class="fas fa-times" @click="showDeleteRecipeModal=false"></i>
+          </div>
+          <div class="body">
+            <h4 class="text-danger">Tem certeza que deseja excluir esta receita?</h4>
+            <h5>Você está deletando 'ração'</h5>
+            <hr>
+            <div class="buttons">
+              <button class="btn btn-success btn-lg" @click="showDeleteRecipeModal=false">Yes</button>
+              <button class="btn btn-danger btn-lg" @click="showDeleteRecipeModal=false">No</button>
+            </div> 
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+
+    <script src="./main.js"></script>
+
+  </body>
+</html>

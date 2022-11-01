@@ -1,0 +1,116 @@
+body {
+  background-color: rgba(176, 187, 204);
+}
+
+i {
+  cursor: pointer;
+}
+
+/* 
+  Caixas de create, update e delete
+*/
+
+.containerAddModal,
+.containerEditModal,
+.containerDeleteModal {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: fit-content;
+  margin-top: 20vh;
+}
+
+#addModal,
+#editModal,
+#deleteModal {
+  width: 35vw;
+  border: 0.5px solid black;
+  background-color: rgba(194, 207, 226);
+  border-radius: 10px;
+}
+
+#addModal .header,
+#editModal .header,
+#deleteModal .header {
+  border-bottom: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+#addModal h5,
+#editModal h5,
+#deleteModal h5 {
+  margin: 0;
+}
+
+#addModal .body,
+#editModal .body,
+#deleteModal .body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0px;
+}
+
+#addModal .nome input,
+.addIngredient button,
+.addRecipe button,
+#editModal .nome input,
+.editRecipe button {
+  width: 25vw;
+  margin-bottom: 10px;
+}
+
+#addModal .body div:not(.dinamic-form) ,
+#editModal .body div {
+  margin-left: 5vw;
+  align-self: flex-start;
+}
+
+/*
+  Caixa de create/update de receitas
+*/
+
+.dinamic-form {
+  display: inline;
+}
+
+.dinamic-form select {
+  width: 9.5vw;
+  margin-bottom: 10px;
+}
+
+.dinamic-form #order {
+  width: 6vw;
+}
+
+.dinamic-form #quantity {
+  width: 9vw;
+}
+
+.ingredientes-receita label:nth-child(2) {
+  width: 6vw;
+}
+
+.ingredientes-receita label:nth-child(1),
+.ingredientes-receita label:nth-child(3) {
+  width: 9.5vw;
+}
+
+.ingredientes-receita button {
+  padding-top: 2px;
+  background-color: rgb(194, 207, 226);
+  border: none;
+  color: #0d6efd;
+}
+
+.ingredientes-receita button:hover {
+  color: #0b5ed7;
+}
